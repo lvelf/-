@@ -1,14 +1,10 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Gobulin_shoot : Enemy
+public class Gobulin_Witch : Enemy
 {
-    //进行掉落
-    public GameObject Gold;
-    public GameObject Effect;
-    bool isDropped;
-    //进行AI巡逻
+   //进行AI巡逻
     public  float width;
     public  float height;
     public  Vector3 theCenterPos;//房间中心的坐标
@@ -19,12 +15,17 @@ public class Gobulin_shoot : Enemy
     public float movespeed;//移动速度
     
     //向玩家发射弓箭
-    public Transform playerTransform;//玩家的transform
-    private Vector2 shootDirection;//射击的方向
-    public GameObject arrow;//弓箭
+    public Transform playerTransform;
+    private Vector2 shootDirection_1,shootDirection_2,shootDirection_3,shootDirection_4,shootDirection_5;//射击的方向
+    public GameObject Boss_Bullet;//弓箭
     public float cd;//射击的cd
     public float shootWaitTime;//现在已经等待了的时间
     public float radius;//检测半径
+    public Transform Muzzle_1;//三个射击方向
+    public Transform Muzzle_2;
+    public Transform Muzzle_3;
+    public Transform Muzzle_4;
+    public Transform Muzzle_5;
 
     //使gobulin死亡之后不再移动
     Vector3 diedPos;
@@ -32,7 +33,6 @@ public class Gobulin_shoot : Enemy
     // Start is called before the first frame update
     public void Start()
     {
-        isDropped = false;
         base.Start();//父类的开始
         GameObject a = Instantiate(theNextMovePos_object);
         theNextMovePos = a.transform;
@@ -79,10 +79,22 @@ public class Gobulin_shoot : Enemy
         {
                 if(shootWaitTime >= cd)
             {
-                shootDirection = (playerTransform.position - transform.position).normalized;
-                float angle = Mathf.Atan2(shootDirection.y,shootDirection.x) * Mathf.Rad2Deg;//找到玩家与gobulin之间的角度差
+                shootDirection_1 = (Muzzle_1.position - transform.position).normalized;
+                shootDirection_2 = (Muzzle_2.position - transform.position).normalized;
+                shootDirection_3 = (Muzzle_3.position - transform.position).normalized;
+                shootDirection_4 = (Muzzle_4.position - transform.position).normalized;
+                shootDirection_5 = (Muzzle_5.position - transform.position).normalized;
+                float angle_1 = Mathf.Atan2(shootDirection_1.y,shootDirection_1.x) * Mathf.Rad2Deg;//找到玩家与gobulin之间的角度差
+                float angle_2 = Mathf.Atan2(shootDirection_2.y,shootDirection_2.x) * Mathf.Rad2Deg;
+                float angle_3 = Mathf.Atan2(shootDirection_3.y,shootDirection_3.x) * Mathf.Rad2Deg;
+                float angle_4 = Mathf.Atan2(shootDirection_4.y,shootDirection_4.x) * Mathf.Rad2Deg;
+                float angle_5 = Mathf.Atan2(shootDirection_5.y,shootDirection_5.x) * Mathf.Rad2Deg;
     
-                Instantiate(arrow,transform.position,Quaternion.Euler(new Vector3(0,0,angle) ));
+                Instantiate(Boss_Bullet,transform.position,Quaternion.Euler(new Vector3(0,0,angle_1) ));
+                Instantiate(Boss_Bullet,transform.position,Quaternion.Euler(new Vector3(0,0,angle_2) ));
+                Instantiate(Boss_Bullet,transform.position,Quaternion.Euler(new Vector3(0,0,angle_3) ));
+                Instantiate(Boss_Bullet,transform.position,Quaternion.Euler(new Vector3(0,0,angle_4) ));
+                Instantiate(Boss_Bullet,transform.position,Quaternion.Euler(new Vector3(0,0,angle_5) ));
                 shootWaitTime = 0;
             }
             else 
@@ -97,19 +109,6 @@ public class Gobulin_shoot : Enemy
         else
         {
             transform.position = diedPos;
-             if(isDropped == false)
-            {
-                float a = Random.Range(0,2);
-                if(a == 1)
-                {   
-                    Instantiate(Gold,transform.position,Quaternion.identity);
-                }
-                else
-                {
-                    Instantiate(Effect,transform.position,Quaternion.identity);
-                }
-                isDropped = true;
-            }
         }
     }
 
@@ -121,5 +120,4 @@ public class Gobulin_shoot : Enemy
         rndPos = new Vector3 (x , y , 0);
         return rndPos;
     }
-
 }
